@@ -15,6 +15,31 @@ Welcome to the **StudentOS – Growth Dashboard** project. This is a production-
 
 ---
 
+## Getting Started & Git Workflow
+
+### 1. Clone the Repository
+To get started, clone the project to your local machine:
+```bash
+git clone [repository-url]
+```
+
+### 2. Create a Feature Branch
+Before you start working, create a new branch for your specific module. This keeps your changes separate from the main code until they are ready.
+```bash
+# Replace your-name with a unique branch name (e.g., wakas-tasks)
+git checkout -b your-name
+```
+
+### 3. Save and Push Your Work
+Once you've made progress, push your branch to the central repository:
+```bash
+git add .
+git commit -m "Brief description of what you did"
+git push origin your-name
+```
+
+---
+
 ## The Architecture
 
 ### 1. Page-Based Ownership
