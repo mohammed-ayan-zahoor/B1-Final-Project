@@ -1,5 +1,5 @@
 /**
- * 🧠 STORAGE.JS - The Central Data Layer
+ * STORAGE.JS - The Central Data Layer
  * 
  * This file is the "Single Source of Truth" for the entire application.
  * All developers must use these functions to read and write data.

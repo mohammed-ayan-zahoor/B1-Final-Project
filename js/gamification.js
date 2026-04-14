@@ -1,5 +1,5 @@
 /**
- * 🔴 STUDENT 4: Himanshu
+ * STUDENT 4: Himanshu
  * Focus: Gamification Page
  * Responsibility: XP & Leveling Logic
  */

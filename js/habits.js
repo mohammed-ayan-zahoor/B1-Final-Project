@@ -1,5 +1,5 @@
 /**
- * 🟡 STUDENT 2: Ayesh
+ *  STUDENT 2: Ayesha
  * Focus: Habit Tracker Page
  * Responsibility: Habit CRUD + Streak Logic
  */
@@ -14,7 +14,7 @@ function initHabits() {
 }
 
 /**
- * STUDENT 2 (Ayesh): Implement this function
+ * STUDENT 2 (Ayesha): Implement this function
  */
 function renderHabits() {
     const data = getData();
@@ -45,7 +45,7 @@ function renderHabits() {
 }
 
 /**
- * STUDENT 2 (Ayesh): Implement "Toggle Habit" logic
+ * STUDENT 2 (Ayesha): Implement "Toggle Habit" logic
  * Clicking the button should:
  * 1. Toggle habit.completedToday
  * 2. If completing, increment streak
