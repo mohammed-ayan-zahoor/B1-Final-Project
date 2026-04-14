@@ -20,7 +20,7 @@ Welcome to the **StudentOS – Growth Dashboard** project. This is a production-
 ### 1. Clone the Repository
 To get started, clone the project to your local machine:
 ```bash
-git clone [repository-url]
+git clone "https://github.com/mohammed-ayan-zahoor/B1-Final-Project.git"
 ```
 
 ### 2. Create a Feature Branch
