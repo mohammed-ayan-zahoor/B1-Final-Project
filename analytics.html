@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudentOS | Analytics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo-container"><i data-lucide="zap" style="width: 32px; height: 32px;"></i></div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="nav-link"><i data-lucide="layout-dashboard"></i></a></li>
+            <li><a href="tasks.html" class="nav-link"><i data-lucide="check-square"></i></a></li>
+            <li><a href="habits.html" class="nav-link"><i data-lucide="calendar"></i></a></li>
+            <li><a href="analytics.html" class="nav-link active"><i data-lucide="bar-chart-2"></i></a></li>
+            <li><a href="gamification.html" class="nav-link"><i data-lucide="award"></i></a></li>
+        </ul>
+        <div style="margin-top: auto;"><a href="#" class="nav-link"><i data-lucide="settings"></i></a></div>
+    </aside>
+
+    <div class="main-content">
+        <header class="top-bar">
+            <div class="search-container">
+                <i data-lucide="search" style="width: 18px;"></i>
+                <input type="text" placeholder="Search analytics...">
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="text-align: right;">
+                    <div id="username" style="font-weight: 600; font-size: 0.9rem;">Student Alpha</div>
+                    <div id="user-level" style="font-size: 0.75rem; color: var(--text-muted);">Level 5</div>
+                </div>
+                <div style="width: 40px; height: 40px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">SA</div>
+            </div>
+        </header>
+
+        <main class="content-area" style="padding-top: 2rem;">
+            <div style="margin-bottom: 2rem;">
+                <h1 style="font-family: 'Outfit'; font-size: 2rem;">Insights & Trends</h1>
+                <p class="text-muted">Avesh, turn data from tasks & habits into visual growth.</p>
+            </div>
+
+            <div class="grid">
+                <div class="card" style="grid-column: span 2;">
+                    <h3 class="card-title"><i data-lucide="activity" style="color: var(--primary);"></i> Productivity Flow</h3>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="growthChart"></canvas>
+                        <div id="chart-placeholder" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--text-muted);">Avesh: Charts render here.</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title"><i data-lucide="pie-chart" style="color: var(--primary);"></i> Task Efficiency</h3>
+                    <div id="task-stats" style="text-align: center; padding: 1.5rem 0;">
+                        <div style="font-size: 3rem; font-weight: 800; font-family: 'Outfit'; color: var(--text-main);">0%</div>
+                        <p class="text-muted">Completion Rate</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title"><i data-lucide="check-circle-2" style="color: var(--primary);"></i> Consistency</h3>
+                    <div id="habit-stats" style="text-align: center; padding: 1.5rem 0;">
+                        <div style="font-size: 3rem; font-weight: 800; font-family: 'Outfit'; color: var(--text-main);">0</div>
+                        <p class="text-muted">Perfect Days</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/analytics.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
