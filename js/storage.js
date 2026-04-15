@@ -32,6 +32,9 @@ const DEFAULT_DATA = {
     }
 };
 
+
+//this is a new feature of mine
+
 /**
  * Retrieves the current state from localStorage.
  * If no data exists, it seeds the storage with DEFAULT_DATA.
