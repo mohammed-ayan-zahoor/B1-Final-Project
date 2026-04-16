@@ -17,11 +17,12 @@ document.addEventListener("DOMContentLoaded", () => {
 // ─────────────────────────────────────────────────────────────
 function initAnalytics() {
     console.log("Avesh's Module: Initializing...");
-    renderStatsCards();       // Requirement 1: Stats Cards
-    renderGrowthChart();      // Requirement 2: Growth Chart (Chart.js line graph)
-    renderEfficiencyScore();  // Requirement 3: Productivity Score
-    renderHabitsBreakdown();  // Bonus: per-habit streak bars (uses real habit names)
-    updateTopBar();           // Show XP / Level from Himanshu's data
+    renderStatsCards();        // Requirement 1: Stats Cards
+    renderGrowthChart();       // Requirement 2: Growth Chart (Chart.js line graph)
+    renderEfficiencyScore();   // Requirement 3: Productivity Score
+    renderTasksBreakdown();    // Tasks list with names
+    renderHabitsBreakdown();   // Habits list with names & streaks
+    updateTopBar();            // Show XP / Level from Himanshu's data
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -240,6 +241,57 @@ function renderEfficiencyScore() {
 
     // Also update the text card below the ring
     setEl("task-rate-big", `${taskRate}%`);
+}
+
+// ─────────────────────────────────────────────────────────────
+// TASKS BREAKDOWN — shows every task by name + completion status
+// ─────────────────────────────────────────────────────────────
+function renderTasksBreakdown() {
+    const data = getData();
+    const tasks = data.tasks || [];
+    const container = document.getElementById("tasks-list");
+    if (!container) return;
+
+    if (tasks.length === 0) {
+        container.innerHTML = `<div class="empty-state">No tasks yet — add tasks in the Task Manager.</div>`;
+        return;
+    }
+
+    container.innerHTML = tasks.map(t => {
+        const name = escHtml(t.title || t.name || t.text || "Task");
+        const done = !!t.completed;
+        const statusColor = done ? "#34d399" : "#f87171";
+        const statusLabel = done ? "✓ Completed" : "⏳ Pending";
+
+        // Priority badge (if the task has priority info)
+        const priority = t.priority || "";
+        let badgeHtml = "";
+        if (priority) {
+            const badgeColor = priority === "high" ? "#f43f5e"
+                : priority === "medium" ? "#fbbf24"
+                : "#6366f1";
+            const badgeBg   = priority === "high" ? "rgba(244,63,94,0.15)"
+                : priority === "medium" ? "rgba(251,191,36,0.15)"
+                : "rgba(99,102,241,0.15)";
+            badgeHtml = `<span style="font-size:0.68rem;padding:2px 8px;border-radius:99px;background:${badgeBg};color:${badgeColor};font-weight:600;text-transform:capitalize;">${escHtml(priority)}</span>`;
+        }
+
+        const barColor = done
+            ? "linear-gradient(90deg,#34d399,#0d9488)"
+            : "rgba(248,113,113,0.25)";
+        const barWidth = done ? 100 : 0;
+
+        return `
+        <div class="habit-row">
+            <div class="habit-row-header">
+                <span style="display:flex;align-items:center;gap:0.5rem;">${name} ${badgeHtml}</span>
+                <span style="color:${statusColor};font-size:0.75rem;font-weight:600;">${statusLabel}</span>
+            </div>
+            <div class="habit-bar-bg">
+                <div class="habit-bar-fill" style="width:${barWidth}%;background:${barColor};"></div>
+            </div>
+        </div>`;
+    }).join("");
 }
 
 // ─────────────────────────────────────────────────────────────
