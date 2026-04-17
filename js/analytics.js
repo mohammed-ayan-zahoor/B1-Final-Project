@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function initAnalytics() {
     console.log("Avesh's Module: Initializing...");
     renderStatsCards();        // Requirement 1: Stats Cards
+    renderLeaderboard();       // Team leaderboard — Wakas / Ayesha / Himanshu
     renderGrowthChart();       // Requirement 2: Growth Chart (Chart.js line graph)
     renderEfficiencyScore();   // Requirement 3: Productivity Score
     renderTasksBreakdown();    // Tasks list with names
@@ -61,8 +62,8 @@ function renderStatsCards() {
     setEl("kpi-streak", bestStreak);
 
     // --- XP / Level (Himanshu) ---
-    setEl("kpi-xp", data.xp || 0);
-    setEl("kpi-level", `Level ${data.level || 1}`);
+    setEl("kpi-xp",    data.user?.xp    ?? data.xp    ?? 0);
+    setEl("kpi-level", `Level ${data.user?.level ?? data.level ?? 1}`);
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -81,9 +82,8 @@ function renderGrowthChart() {
     const habits = data.habits || [];
 
     // Build last-7-day date strings + weekday labels
-    const dayLabels = [];
-    const dateStrs = [];
-    const taskCounts = [];
+    const dayLabels   = [];
+    const taskCounts  = [];
     const habitCounts = [];
 
     for (let i = 6; i >= 0; i--) {
@@ -93,7 +93,6 @@ function renderGrowthChart() {
         const label = d.toLocaleDateString("en-US", { weekday: "short" });
 
         dayLabels.push(label);
-        dateStrs.push(dateStr);
 
         // Tasks completed on this day
         const doneTasks = tasks.filter(t =>
@@ -123,8 +122,69 @@ function renderGrowthChart() {
     const ph = document.getElementById("chart-placeholder");
     if (ph) ph.style.display = "none";
 
+    // ── Custom plugin: label highest & lowest point on each dataset ──
+    const peakAnnotator = {
+        id: "peakAnnotator",
+        afterDatasetsDraw(chart) {
+            const { ctx } = chart;
+
+            // dataset 0 = Wakas (tasks), dataset 1 = Ayesha (habits)
+            const owners = [
+                { name: "Wakas",  color: "#0d9488" },
+                { name: "Ayesha", color: "#6366f1" },
+            ];
+
+            chart.data.datasets.forEach((dataset, dsi) => {
+                const meta   = chart.getDatasetMeta(dsi);
+                const values = dataset.data;
+                if (!values.length) return;
+
+                const owner  = owners[dsi] || { name: "?", color: "#94a3b8" };
+                const maxVal = Math.max(...values);
+                const minVal = Math.min(...values);
+
+                meta.data.forEach((point, i) => {
+                    const val = values[i];
+                    ctx.save();
+                    ctx.font         = "bold 10px Inter, sans-serif";
+                    ctx.textAlign    = "center";
+                    ctx.textBaseline = "middle";
+
+                    if (val === maxVal) {
+                        // Pill background above the point
+                        const label = `▲ ${owner.name} (High)`;
+                        const tw    = ctx.measureText(label).width + 10;
+                        const ty    = point.y - 22;
+                        ctx.fillStyle = owner.color + "22";
+                        ctx.beginPath();
+                        ctx.roundRect(point.x - tw / 2, ty - 9, tw, 18, 8);
+                        ctx.fill();
+                        ctx.fillStyle = owner.color;
+                        ctx.fillText(label, point.x, ty);
+                    }
+
+                    if (val === minVal && minVal !== maxVal) {
+                        // Pill background below the point
+                        const label = `▼ ${owner.name} (Low)`;
+                        const tw    = ctx.measureText(label).width + 10;
+                        const ty    = point.y + 22;
+                        ctx.fillStyle = owner.color + "22";
+                        ctx.beginPath();
+                        ctx.roundRect(point.x - tw / 2, ty - 9, tw, 18, 8);
+                        ctx.fill();
+                        ctx.fillStyle = owner.color;
+                        ctx.fillText(label, point.x, ty);
+                    }
+
+                    ctx.restore();
+                });
+            });
+        }
+    };
+
     new Chart(ctx, {
         type: "line",
+        plugins: [peakAnnotator],
         data: {
             labels: dayLabels,
             datasets: [
@@ -160,6 +220,7 @@ function renderGrowthChart() {
             responsive: true,
             maintainAspectRatio: false,
             interaction: { mode: "index", intersect: false },
+            layout: { padding: { top: 30 } },   // room for top labels
             plugins: {
                 legend: {
                     display: true,
@@ -241,6 +302,92 @@ function renderEfficiencyScore() {
 
     // Also update the text card below the ring
     setEl("task-rate-big", `${taskRate}%`);
+}
+
+// ─────────────────────────────────────────────────────────────
+// TEAM LEADERBOARD
+//   Wakas    → XP from completed tasks (each task has an .xp field)
+//   Ayesha   → XP from habits done today (×20) + total streak days (×5)
+//   Himanshu → XP from data.user.xp (he tracks the global XP pool)
+// ─────────────────────────────────────────────────────────────
+function renderLeaderboard() {
+    const data = getData();
+    const container = document.getElementById("leaderboard-list");
+    if (!container) return;
+
+    // ── Wakas (Task Manager) ──────────────────────────────────
+    const completedTasks = data.tasks.filter(t => t.completed);
+    const wakasTasksDone = completedTasks.length;
+    const totalTasks     = data.tasks.length;
+    const wakasXP        = completedTasks.reduce((sum, t) => sum + (t.xp || 10), 0);
+
+    // ── Ayesha (Habit Tracker) ────────────────────────────────
+    const habitsDoneToday = data.habits.filter(h => h.completedToday).length;
+    const totalHabits     = data.habits.length;
+    const totalStreak     = data.habits.reduce((sum, h) => sum + (h.streak || 0), 0);
+    const ayeshaXP        = (habitsDoneToday * 20) + (totalStreak * 5);
+
+    // ── Himanshu (Gamification) ───────────────────────────────
+    const himanshuXP    = (data.user && data.user.xp)   ? data.user.xp    : (data.xp    || 0);
+    const himanshuLevel = (data.user && data.user.level) ? data.user.level : (data.level || 1);
+
+    const members = [
+        {
+            name:      "Wakas",
+            role:      "Task Manager",
+            icon:      "check-square",
+            color:     "#0d9488",
+            bg:        "rgba(13,148,136,0.15)",
+            xpEarned:  wakasXP,
+            detail:    `${wakasTasksDone} / ${totalTasks} tasks completed`,
+        },
+        {
+            name:      "Ayesha",
+            role:      "Habit Tracker",
+            icon:      "calendar-check",
+            color:     "#6366f1",
+            bg:        "rgba(99,102,241,0.15)",
+            xpEarned:  ayeshaXP,
+            detail:    `${habitsDoneToday} / ${totalHabits} habits today • ${totalStreak} streak days`,
+        },
+        {
+            name:      "Himanshu",
+            role:      "Gamification",
+            icon:      "award",
+            color:     "#fbbf24",
+            bg:        "rgba(251,191,36,0.15)",
+            xpEarned:  himanshuXP,
+            detail:    `Level ${himanshuLevel} • ${himanshuXP} total XP earned`,
+        }
+    ];
+
+    // Sort highest XP first for ranking
+    members.sort((a, b) => b.xpEarned - a.xpEarned);
+    const topXP = members[0].xpEarned || 1;
+    const medals = ["🥇", "🥈", "🥉"];
+
+    container.innerHTML = members.map((m, i) => {
+        const barPct = Math.min(Math.round((m.xpEarned / topXP) * 100), 100);
+        return `
+        <div style="display:flex;align-items:center;gap:1rem;padding:0.9rem 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+            <div style="font-size:1.5rem;min-width:32px;text-align:center;">${medals[i]}</div>
+            <div style="width:38px;height:38px;border-radius:50%;background:${m.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i data-lucide="${m.icon}" style="width:16px;height:16px;color:${m.color};"></i>
+            </div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:0.5rem;">
+                    <span style="font-weight:700;font-size:0.95rem;color:var(--text-main,#f1f5f9);">${m.name}</span>
+                    <span style="font-size:0.8rem;color:${m.color};font-weight:700;white-space:nowrap;">${m.xpEarned} XP</span>
+                </div>
+                <div style="font-size:0.72rem;color:var(--text-muted,#94a3b8);margin:0.2rem 0 0.45rem;">${m.detail}</div>
+                <div class="habit-bar-bg">
+                    <div class="habit-bar-fill" style="width:${barPct}%;background:linear-gradient(90deg,${m.color},${m.color}99);"></div>
+                </div>
+            </div>
+        </div>`;
+    }).join("");
+
+    if (window.lucide) lucide.createIcons();
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -344,7 +491,7 @@ function renderHabitsBreakdown() {
 // ─────────────────────────────────────────────────────────────
 function updateTopBar() {
     const data = getData();
-    setEl("user-level", `Level ${data.level || 1}`);
+    setEl("user-level", `Level ${data.user?.level ?? data.level ?? 1}`);
 }
 
 // ─────────────────────────────────────────────────────────────
