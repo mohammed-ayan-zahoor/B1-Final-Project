@@ -19,6 +19,11 @@ const DEFAULT_DATA = {
     habits: [
         { id: 1, name: "Morning Meditation", streak: 5, completedToday: false },
         { id: 2, name: "Coding Practice", streak: 12, completedToday: true }
+        { id: 3, name: "Reading", streak: 3, completedToday: false }
+        { id: 3, name: "Exercise", streak: 3, completedToday: false }
+        { id: 3, name: "Sleep on time", streak: 3, completedToday: false }
+        
+],}
     ],
     user: {
         name: "Student Alpha",

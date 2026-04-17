@@ -27,11 +27,16 @@ function renderHabits() {
             <div>
                 <h4 style="margin: 0; font-size: 1rem;">${habit.name}</h4>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Current Streak: ${habit.streak} days</p>
-            </div>
-            <button class="btn" onclick="toggleHabit(${habit.id})"
+                
+                <button class="btn" onclick="toggleHabit(${habit.id})"
     style="background: ${habit.completedToday ? 'var(--primary)' : 'var(--bg-main)'}; 
     color: ${habit.completedToday ? 'white' : 'var(--text-muted)'}">
-        </div>
+    
+    <i data-lucide="${habit.completedToday ? 'check' : 'circle'}" style="width: 18px;"></i>
+
+</button>
+            
+            
     `).join('');
 
     // Update global streak counter
