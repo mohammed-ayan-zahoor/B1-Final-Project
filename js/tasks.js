@@ -61,8 +61,16 @@ document.getElementById("add-task-btn")?.addEventListener("click", () => {
     const text = input.value.trim();
     
     if (text) {
-        alert("Wakas! This is where you implement the logic to save tasks and call saveData().");
-        // Steps: 1. getData(), 2. Push new task, 3. saveData(), 4. renderTasks(), 5. Clear input
+        const data = getData();
+        const newTask = {
+            id: Date.now(),
+            text: text,
+            completed: false,
+            xp: 10
+        };
+        data.tasks.push(newTask);
+        saveData(data);
+        renderTasks();
         input.value = "";
     }
 });
