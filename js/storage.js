@@ -21,7 +21,7 @@ const DEFAULT_DATA = {
         { id: 2, name: "Coding Practice", streak: 12, completedToday: true }
     ],
     user: {
-        name: "Student Alpha",
+        name: "Wakas",
         xp: 1250,
         level: 5,
         targetXp: 2000
