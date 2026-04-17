@@ -74,3 +74,20 @@ document.getElementById("add-task-btn")?.addEventListener("click", () => {
         input.value = "";
     }
 });
+
+/**
+ * STUDENT 1 (Wakas): Toggle Task Completion
+ */
+document.getElementById("tasks-list")?.addEventListener("change", (e) => {
+    if (e.target.tagName === "INPUT" && e.target.type === "checkbox") {
+        const taskId = parseInt(e.target.getAttribute("data-id"));
+        const data = getData();
+        
+        const task = data.tasks.find(t => t.id === taskId);
+        if (task) {
+            task.completed = e.target.checked;
+            saveData(data);
+            renderTasks();
+        }
+    }
+});
