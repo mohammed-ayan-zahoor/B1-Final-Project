@@ -91,3 +91,20 @@ document.getElementById("tasks-list")?.addEventListener("change", (e) => {
         }
     }
 });
+
+/**
+ * STUDENT 1 (Wakas): Delete Task
+ */
+document.getElementById("tasks-list")?.addEventListener("click", (e) => {
+    const deleteBtn = e.target.closest(".delete-btn");
+    
+    if (deleteBtn) {
+        const taskId = parseInt(deleteBtn.getAttribute("data-id"));
+        const data = getData();
+        
+        data.tasks = data.tasks.filter(t => t.id !== taskId);
+        
+        saveData(data);
+        renderTasks();
+    }
+});
