@@ -56,6 +56,39 @@ function renderHabits() {
  * 2. If completing, increment streak
  * 3. saveData() and re-render
  */
-function toggleHabit(id) {
-    // Ayesh: Logic goes here
+
+    function toggleHabit(id) {
+    const data = getData();
+
+    const habit = data.habits.find(h => h.id === id);
+    if (!habit) return;
+
+    const today = new Date().toDateString();
+
+    if (!habit.completedToday) {
+        habit.completedToday = true;
+
+        if (habit.lastCompletedDate) {
+            const lastDate = new Date(habit.lastCompletedDate);
+            const diffDays = Math.floor((new Date(today) - lastDate) / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 1) {
+                habit.streak++;
+            } else {
+                habit.streak = 1;
+            }
+        } else {
+            habit.streak = 1;
+        }
+
+        habit.lastCompletedDate = today;
+
+    } else {
+        habit.completedToday = false;
+    }
+
+    saveData(data);
+    renderHabits();
 }
+   
+
