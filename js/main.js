@@ -85,3 +85,70 @@ function renderDashboardSummaries(data) {
         `).join('');
     }
 }
+
+/**
+ * GLOBAL COMPONENT: Custom Input Modal
+ * Used for editing tasks, habits, etc. across different pages.
+ */
+function openInputModal(options) {
+    const { title, defaultValue, onSave } = options;
+    
+    // Create modal if it doesn't exist
+    let modal = document.getElementById('global-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'global-modal';
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="modal-title">Edit Item</h3>
+                    <button class="modal-close" id="modal-close-btn"><i data-lucide="x"></i></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="modal-input-field" class="modal-input" placeholder="Enter text...">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" id="modal-cancel-btn" style="background: var(--bg-main); color: var(--text-muted);">Cancel</button>
+                    <button class="btn btn-primary" id="modal-save-btn">Save Changes</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        if (window.lucide) lucide.createIcons();
+
+        // Close events
+        document.getElementById('modal-close-btn').onclick = closeInputModal;
+        document.getElementById('modal-cancel-btn').onclick = closeInputModal;
+        modal.onclick = (e) => { if (e.target === modal) closeInputModal(); };
+    }
+
+    // Set content
+    document.getElementById('modal-title').textContent = title || 'Edit Item';
+    const input = document.getElementById('modal-input-field');
+    input.value = defaultValue || '';
+    
+    // Show modal
+    modal.classList.add('active');
+    setTimeout(() => input.focus(), 100);
+
+    // Save event (override previous)
+    document.getElementById('modal-save-btn').onclick = () => {
+        const newValue = input.value.trim();
+        if (newValue) {
+            onSave(newValue);
+            closeInputModal();
+        }
+    };
+
+    // Enter key support
+    input.onkeydown = (e) => {
+        if (e.key === 'Enter') document.getElementById('modal-save-btn').click();
+        if (e.key === 'Escape') closeInputModal();
+    };
+}
+
+function closeInputModal() {
+    const modal = document.getElementById('global-modal');
+    if (modal) modal.classList.remove('active');
+}
