@@ -16,15 +16,15 @@ const DEFAULT_DATA = {
         { id: 1, text: "Complete Project Base", completed: true, xp: 50 },
         { id: 2, text: "Set up Team Workflow", completed: false, xp: 20 }
     ],
-    habits: [
-        { id: 1, name: "Morning Meditation", streak: 5, completedToday: false },
-        { id: 2, name: "Coding Practice", streak: 12, completedToday: true }
-        { id: 3, name: "Reading", streak: 3, completedToday: false }
-        { id: 3, name: "Exercise", streak: 7, completedToday: false }
-        { id: 3, name: "Sleep on time", streak: 10, completedToday: false }
-        
-],}
-    ],
+    
+        habits: [
+ { id:1, name:"Morning Meditation", streak:5, completedToday:false },
+ { id:2, name:"Coding Practice", streak:12, completedToday:true },
+ { id:3, name:"Reading", streak:3, completedToday:false },
+ { id:4, name:"Exercise", streak:7, completedToday:false },
+ { id:5, name:"Sleep on time", streak:10, completedToday:false }
+],
+    
     user: {
         name: "Student Alpha",
         xp: 1250,
@@ -35,7 +35,7 @@ const DEFAULT_DATA = {
         totalTasksCompleted: 45,
         totalHabitDays: 120
     }
-};
+
 
 /**
  * Retrieves the current state from localStorage.
