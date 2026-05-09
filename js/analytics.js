@@ -30,6 +30,15 @@ function calculateStats() {
     
     const taskStatsEl = document.querySelector("#task-stats div");
     if (taskStatsEl) taskStatsEl.textContent = `${rate}%`;
+
+    // Efficiency / Productivity Score Calc
+    const completedHabits = data.habits.filter(h => h.completedToday).length;
+    const habitStatsEl = document.querySelector("#habit-stats div");
+    if (habitStatsEl) {
+        // Calculate a Productivity Score based on habits checked today (e.g., 50 points per completed habit today)
+        const productivityScore = completedHabits * 50;
+        habitStatsEl.textContent = productivityScore;
+    }
 }
 
 /**
@@ -37,20 +46,26 @@ function calculateStats() {
  * You can use Chart.js (already included in analytics.html)
  */
 function renderPlaceholderChart() {
+    const data = getData();
     const ctx = document.getElementById('growthChart')?.getContext('2d');
     if (!ctx) return;
 
     // Hint: Avesh, use data.stats or data.tasks to build map data for this chart
     document.getElementById("chart-placeholder").style.display = "none";
     
+    // Use habit names as labels for the chart
+    const labels = data.habits.map(h => h.name);
+    // Generate some dummy values based on the number of labels
+    const dummyData = labels.map(() => Math.floor(Math.random() * 10) + 1);
+    
     // Minimal Chart.js example
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            labels: labels,
             datasets: [{
-                label: 'Tasks Completed',
-                data: [2, 5, 3, 8, 4, 3, 6],
+                label: 'Growth Trend',
+                data: dummyData,
                 borderColor: '#0d9488',
                 backgroundColor: 'rgba(13, 148, 136, 0.1)',
                 fill: true,
